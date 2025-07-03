@@ -10,12 +10,12 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
-type HttpOrderHandler struct {
+type Application struct {
 	service service.AllOfService
 }
 
-func NewHttpOrderHandler(srv service.AllOfService) *HttpOrderHandler {
-	return &HttpOrderHandler{service: srv}
+func NewHttpOrderHandler(srv service.AllOfService) *Application {
+	return &Application{service: srv}
 }
 
 func main() {
@@ -38,8 +38,7 @@ func main() {
 	srv := service.NewService(repo)
 
 	handler := NewHttpOrderHandler(srv)
-	handler.RegisterRoutes(app)
-
+	handler.AuthRoutes(app)
 	app.Listen(":8080")
 
 }
