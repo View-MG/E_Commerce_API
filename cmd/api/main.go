@@ -11,12 +11,11 @@ import (
 )
 
 type Application struct {
-	service service.AllOfService
+	Service   service.AllOfService
+	JWTSecret []byte
 }
 
-func NewHttpOrderHandler(srv service.AllOfService) *Application {
-	return &Application{service: srv}
-}
+var jwtSecret = []byte("secret-key")
 
 func main() {
 	app := fiber.New()
@@ -37,8 +36,14 @@ func main() {
 	repo := repository.NewRepository(adapter.DB)
 	srv := service.NewService(repo)
 
-	handler := NewHttpOrderHandler(srv)
+	handler := &Application{
+		Service:   srv,
+		JWTSecret: jwtSecret,
+	}	
 	handler.AuthRoutes(app)
+	api := app.Group("/api", JWTMiddleware(handler.JWTSecret))
+
+	handler.RegisterRoutes(api)
 	app.Listen(":8080")
 
 }

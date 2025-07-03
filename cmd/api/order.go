@@ -5,8 +5,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func (h *Application) RegisterRoutes(app *fiber.App) {
-	app.Post("/orders", h.CreateOrder)
+func (h *Application) RegisterRoutes(r fiber.Router) {
+	r.Post("/orders", h.CreateOrder)
 }
 
 func (h *Application) CreateOrder(c *fiber.Ctx) error {
@@ -16,12 +16,5 @@ func (h *Application) CreateOrder(c *fiber.Ctx) error {
 			"error": "invalid request body",
 		})
 	}
-
-	if err := h.service.Order.CreateOrder(order); err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": err.Error(),
-		})
-	}
-
 	return c.Status(fiber.StatusCreated).JSON(order)
 }

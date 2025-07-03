@@ -1,6 +1,8 @@
-package main
+package response
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,10 +14,9 @@ type Response struct {
 	Result  interface{} `json:"result,omitempty"`
 }
 
-func SuccessResponse(c *fiber.Ctx, message string, result interface{}) error {
+func SuccessResponse(c *fiber.Ctx, result interface{}) error {
 	return c.Status(fiber.StatusOK).JSON(Response{
 		Success: true,
-		Message: message,
 		Result:  result,
 	})
 }
@@ -35,6 +36,12 @@ func ErrorResponse(c *fiber.Ctx, statusCode int, message string) error {
 	})
 }
 
+func UnauthorizedResponse(c *fiber.Ctx, err string) error {
+	return c.Status(fiber.StatusUnauthorized).JSON(Response{
+		Success: false,
+		Message: fmt.Sprintf("Unauthorized: %v", err),
+	})
+}
 func UnprocessableEntity(c *fiber.Ctx, message string, result interface{}) error {
 	return c.Status(fiber.StatusUnprocessableEntity).JSON(Response{
 		Success: false,

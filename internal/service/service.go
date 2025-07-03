@@ -8,6 +8,7 @@ type service struct {
 
 type AllOfService struct {
 	Order OrderService
+	User UserService
 }
 
 func NewService(repo repository.AllRepo) AllOfService {
@@ -16,5 +17,6 @@ func NewService(repo repository.AllRepo) AllOfService {
 	}
 	return AllOfService{
 		Order: srv,
+		User: srv,
 	}
 }
