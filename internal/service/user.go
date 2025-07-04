@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/View-MG/be-project/config"
 	dtoReq "github.com/View-MG/be-project/internal/dto/request"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
@@ -49,8 +50,8 @@ func (s service) Login(c *fiber.Ctx, user dtoReq.LoginRequest) (string, error) {
 	claims := token.Claims.(jwt.MapClaims)
 	claims["username"] = user.Username
 	claims["exp"] = time.Now().Add(time.Hour * 24).Unix() // token หมดอายุ 24 ชั่วโมง
-	secretKey := []byte("secret-key")
-	tokenString, err := token.SignedString(secretKey)
+	appConfig := config.GetAppConfig()
+	tokenString, err := token.SignedString([]byte(appConfig.JWTSecret))
 	if err != nil {
 		return "", err
 	}
