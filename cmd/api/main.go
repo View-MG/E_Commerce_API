@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 
+	"github.com/View-MG/be-project/config"
 	"github.com/View-MG/be-project/internal/adapters"
 	"github.com/View-MG/be-project/internal/repository"
 	"github.com/View-MG/be-project/internal/service"
@@ -15,12 +16,12 @@ type Application struct {
 	JWTSecret []byte
 }
 
-var jwtSecret = []byte("secret-key")
-
 func main() {
+	appConfig := config.GetAppConfig()
+
+	postgresInfo := appConfig.Postgres
 	app := fiber.New()
-	dsn := "postgres://myuser:mypassword@localhost:5432/mydatabase?sslmode=disable"
-	adapter, err := adapters.NewPostgresAdapter(dsn)
+	adapter, err := adapters.NewPostgresAdapter(postgresInfo.Username, postgresInfo.Password, postgresInfo.Host, postgresInfo.Port, postgresInfo.DBName)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect database: %v", err))
 	}
@@ -38,12 +39,12 @@ func main() {
 
 	handler := &Application{
 		Service:   srv,
-		JWTSecret: jwtSecret,
-	}	
+		JWTSecret: []byte(appConfig.JWTSecret),
+	}
 	handler.AuthRoutes(app)
 	api := app.Group("/api", JWTMiddleware(handler.JWTSecret))
 
 	handler.RegisterRoutes(api)
-	app.Listen(":8080")
+	app.Listen(":" + appConfig.ServerPort)
 
 }
