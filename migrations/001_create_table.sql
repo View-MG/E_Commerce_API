@@ -1,0 +1,48 @@
+CREATE TABLE Category (
+    CategoryId SERIAL PRIMARY KEY,
+    Category VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE OptStatus (
+    OptStatusId SERIAL PRIMARY KEY,
+    StatusName VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Product (
+    No SERIAL PRIMARY KEY,
+   	SKU VARCHAR(100) NOT NULL UNIQUE,
+    Name VARCHAR(255) NOT NULL,
+    Price NUMERIC(10, 2) NOT NULL,
+    CategoryId INT REFERENCES Category(CategoryId),
+    Stock INT DEFAULT 0,
+    Description TEXT
+);
+
+CREATE TABLE "User" (
+   	UserId UUID PRIMARY KEY,
+    Username VARCHAR(100) NOT NULL UNIQUE,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    PasswordHash TEXT NOT NULL,
+    FullName VARCHAR(255),
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE "Order" (
+    No SERIAL PRIMARY KEY,
+    OrderNo VARCHAR(50) NOT NULL UNIQUE,
+    TrackingNo VARCHAR(100),
+    OptStatusId INT REFERENCES OptStatus(OptStatusId),
+    UserId UUID REFERENCES "User"(UserId),
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    DetailAddress TEXT,
+    PostCode VARCHAR(10),
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE OrderLine (
+    LineNo SERIAL PRIMARY KEY,
+    SKU VARCHAR(100) REFERENCES Product(sku),
+    OrderNo VARCHAR(50) REFERENCES "Order"(OrderNo),
+    TrackingNo VARCHAR(100)
+);

@@ -9,15 +9,19 @@ type repository struct {
 }
 
 type AllRepo struct {
-	Order OrderRepository
-	User UserRepository
+	User    UserRepository
+	Product ProductRepository
+	Cart    CartRepository
+	Order   OrderRepository
 }
 
 func NewRepository(db *sqlx.DB) AllRepo {
 	repo := &repository{db: db}
 	return AllRepo{
-		Order: repo,
-		User: repo,
+		User:    repo,
+		Product: repo,
+		Cart:    repo,
+		Order:   repo,
 	}
 
 }

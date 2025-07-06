@@ -7,8 +7,10 @@ type service struct {
 }
 
 type AllOfService struct {
-	Order OrderService
-	User UserService
+	User    UserService
+	Product ProductService
+	Cart    CartService
+	Order   OrderService
 }
 
 func NewService(repo repository.AllRepo) AllOfService {
@@ -16,7 +18,9 @@ func NewService(repo repository.AllRepo) AllOfService {
 		repo: repo,
 	}
 	return AllOfService{
-		Order: srv,
-		User: srv,
+		User:    srv,
+		Product: srv,
+		Cart:    srv,
+		Order:   srv,
 	}
 }

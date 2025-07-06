@@ -41,10 +41,13 @@ func main() {
 		Service:   srv,
 		JWTSecret: []byte(appConfig.JWTSecret),
 	}
-	handler.AuthRoutes(app)
 	api := app.Group("/api", JWTMiddleware(handler.JWTSecret))
 
-	handler.RegisterRoutes(api)
+	handler.AuthRoutes(app)
+	handler.ProductRoutes(api)
+	handler.CartRoutes(api)
+	handler.OrderRoutes(api)
+
 	app.Listen(":" + appConfig.ServerPort)
 
 }
